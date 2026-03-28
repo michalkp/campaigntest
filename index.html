@@ -109,9 +109,10 @@ if (hexData) {
 
         if (!hexData) return;
 
-        tooltip.innerHTML = Object.entries(hexData)
-          .map(([k, v]) => `${k}: ${v}%`)
-          .join("<br>");
+       tooltip.innerHTML = Object.entries(hexData)
+        .filter(([k, v]) => Number(v) > 0)
+        .map(([k, v]) => `${k}: ${v}%`)
+        .join("<br>");
 
         tooltip.style.display = "block";
         tooltip.style.left = e.pageX + 10 + "px";
