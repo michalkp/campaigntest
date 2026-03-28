@@ -84,7 +84,26 @@ fetch(sheetURL)
     // Attach behavior to hexes
     document.querySelectorAll(".hex").forEach(hex => {
       const id = hex.dataset.id;
+const hexData = data[id];
 
+if (hexData) {
+  let maxFaction = null;
+  let maxValue = 0;
+
+  for (const [faction, value] of Object.entries(hexData)) {
+    if (value > maxValue) {
+      maxValue = value;
+      maxFaction = faction;
+    }
+  }
+
+  // Apply color only if > 50%
+  if (maxValue > 50 && factionColors[maxFaction]) {
+    hex.setAttribute("fill", factionColors[maxFaction]);
+  } else {
+    hex.setAttribute("fill", "lightgray");
+  }
+}
       hex.addEventListener("mousemove", (e) => {
 
         const hexData = data[id];
@@ -106,6 +125,13 @@ fetch(sheetURL)
     });
 
   });
+  const factionColors = {
+  Den: "violet",
+  Axe: "red",
+  Rubi: "turquoise",
+  Tabor: "darkgray",
+  Oil: "orange"
+};
 </script>
 
 </body>
