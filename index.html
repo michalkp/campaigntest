@@ -76,8 +76,7 @@ fetch(sheetURL)
       for (let j = 1; j < headers.length; j++) {
         const value = row[j];
         if (value) {
-          data[hexID][headers[j]] = Number(value);
-        }
+          data[hexID][headers[j].trim()] = Number(value);        }
       }
     }
 
