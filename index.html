@@ -35,6 +35,9 @@
 
   <!-- Row 1 -->
   <polygon class="hex" data-id="A1" points="100,50 140,75 140,115 100,140 60,115 60,75" fill="lightgray"/>
+  <text x="100" y="100" text-anchor="middle" dominant-baseline="middle" font-size="14">
+    A1
+  </text>
   <polygon class="hex" data-id="A2" points="200,50 240,75 240,115 200,140 160,115 160,75" fill="lightgray"/>
   <polygon class="hex" data-id="A3" points="300,50 340,75 340,115 300,140 260,115 260,75" fill="lightgray"/>
 
@@ -109,7 +112,9 @@ if (hexData) {
 
         if (!hexData) return;
 
-       tooltip.innerHTML = Object.entries(hexData)
+      tooltip.innerHTML =
+        `<strong>${id}</strong><br>` +
+        Object.entries(hexData)
         .filter(([k, v]) => Number(v) > 0)
         .map(([k, v]) => `${k}: ${v}%`)
         .join("<br>");
