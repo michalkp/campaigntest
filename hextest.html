@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hex Map</title>
+
+<style>
+  body {
+    font-family: Arial;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .tooltip {
+    position: absolute;
+    background: white;
+    border: 1px solid black;
+    padding: 8px;
+    display: none;
+    pointer-events: none;
+  }
+
+  svg {
+    overflow: visible;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="tooltip" class="tooltip"></div>
+
+<svg width="400" height="350">
+
+  <!-- Row 1 -->
+  <polygon class="hex" data-id="A1" points="100,50 140,75 140,115 100,140 60,115 60,75" fill="lightgray"/>
+  <polygon class="hex" data-id="A2" points="200,50 240,75 240,115 200,140 160,115 160,75" fill="lightgray"/>
+  <polygon class="hex" data-id="A3" points="300,50 340,75 340,115 300,140 260,115 260,75" fill="lightgray"/>
+
+  <!-- Row 2 -->
+  <polygon class="hex" data-id="B1" points="150,140 190,165 190,205 150,230 110,205 110,165" fill="lightgray"/>
+  <polygon class="hex" data-id="B2" points="250,140 290,165 290,205 250,230 210,205 210,165" fill="lightgray"/>
+  <polygon class="hex" data-id="B3" points="350,140 390,165 390,205 350,230 310,205 310,165" fill="lightgray"/>
+
+  <!-- Row 3 -->
+  <polygon class="hex" data-id="C1" points="100,230 140,255 140,295 100,320 60,295 60,255" fill="lightgray"/>
+  <polygon class="hex" data-id="C2" points="200,230 240,255 240,295 200,320 160,295 160,255" fill="lightgray"/>
+  <polygon class="hex" data-id="C3" points="300,230 340,255 340,295 300,320 260,295 260,255" fill="lightgray"/>
+
+</svg>
+
+<script>
+const tooltip = document.getElementById("tooltip");
+
+// 🔗 Your Google Sheets CSV
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8wYEvLm8Pppq4fDvgzGss6uY8TLr7XvR-JPyxOmOFCJLE7VViUbh9o5I_acXhvc8xiig0Jm-q65Bx/pub?output=csv";
+
+// Load data
+fetch(sheetURL)
+  .then(response => response.text())
+  .then(csv => {
+
+    const rows = csv.trim().split("\n").map(r => r.split(","));
+    const headers = rows[0];
+
+    const data = {};
+
+    // Convert CSV → object
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const hexID = row[0];
+
+      data[hexID] = {};
+
+      for (let j = 1; j < headers.length; j++) {
+        const value = row[j];
+        if (value) {
+          data[hexID][headers[j]] = Number(value);
+        }
+      }
+    }
+
+    // Attach behavior to hexes
+    document.querySelectorAll(".hex").forEach(hex => {
+      const id = hex.dataset.id;
+
+      hex.addEventListener("mousemove", (e) => {
+
+        const hexData = data[id];
+
+        if (!hexData) return;
+
+        tooltip.innerHTML = Object.entries(hexData)
+          .map(([k, v]) => `${k}: ${v}%`)
+          .join("<br>");
+
+        tooltip.style.display = "block";
+        tooltip.style.left = e.pageX + 10 + "px";
+        tooltip.style.top = e.pageY + 10 + "px";
+      });
+
+      hex.addEventListener("mouseleave", () => {
+        tooltip.style.display = "none";
+      });
+    });
+
+  });
+</script>
+
+</body>
+</html>
